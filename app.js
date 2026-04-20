@@ -6,6 +6,9 @@ const express=require('express');
 const app=express();
 
 
+const connectToDb = require('./db/db'); //database connection
+connectToDb();  //database connection with server.js file
+
 app.use(cors());
 
 
