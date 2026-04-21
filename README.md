@@ -398,3 +398,359 @@ Authorization: Bearer <token>
 ```
 
 ---
+
+---
+
+# User Login Endpoint
+
+## Overview
+The `/users/login` endpoint allows registered users to authenticate and obtain a JWT token. It validates the provided email and password, compares the password with the stored hash, and returns an authentication token upon successful login.
+
+---
+
+## Endpoint Details
+
+### Route
+```
+POST /users/login
+```
+
+### Description
+Authenticates an existing user by validating their email and password. The password is compared against the bcrypt hash stored in the database. Upon successful authentication, a JWT token is generated and returned for use in subsequent API requests.
+
+---
+
+## Request Format
+
+### Method
+`POST`
+
+### Headers
+```
+Content-Type: application/json
+```
+
+### Request Body
+```json
+{
+  "email": "user@example.com",
+  "password": "securePassword123"
+}
+```
+
+### Required Fields
+
+| Field | Type | Description | Validation Rules |
+|-------|------|-------------|------------------|
+| `email` | String | User's registered email address | Must be a valid email format |
+| `password` | String | User's password | Minimum 6 characters |
+
+---
+
+## Response Codes
+
+### Success Response
+
+#### Status Code: `200 OK`
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "_id": "507f1f77bcf86cd799439011",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "user@example.com",
+    "socketId": null,
+    "__v": 0
+  }
+}
+```
+
+### Error Responses
+
+#### Status Code: `400 Bad Request`
+**Cause:** Validation errors in the request body
+```json
+{
+  "errors": [
+    {
+      "msg": "Invalid Email",
+      "param": "email",
+      "location": "body"
+    },
+    {
+      "msg": "password must be at least 6 characters long",
+      "param": "password",
+      "location": "body"
+    }
+  ]
+}
+```
+
+#### Status Code: `401 Unauthorized`
+**Cause:** User not found in database (invalid email)
+```json
+{
+  "message": "Invalid email or password"
+}
+```
+
+#### Status Code: `400 Bad Request`
+**Cause:** Password does not match the stored hash (invalid password)
+```json
+{
+  "message": "Invalid email or password"
+}
+```
+
+---
+
+## Response Examples
+
+### Example 1: Successful Login
+
+**Request:**
+```bash
+POST /users/login
+Content-Type: application/json
+
+{
+  "email": "john.doe@gmail.com",
+  "password": "securePass123"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTA0YzJhNGY4ZjdmZjAwMDEyYzNkNDUiLCJpYXQiOjE2OTQ4NDIxODZ9.1xK9J0L6mP2qR3sT4uV5wX6yZ7aB8cD9eF0gH1iJ2k",
+  "user": {
+    "_id": "6504c2a4f8f7ff00012c3d45",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.doe@gmail.com",
+    "socketId": null,
+    "__v": 0
+  }
+}
+```
+
+---
+
+### Example 2: Invalid Email Format
+
+**Request:**
+```bash
+POST /users/login
+Content-Type: application/json
+
+{
+  "email": "not-an-email",
+  "password": "securePass123"
+}
+```
+
+**Response (400 Bad Request):**
+```json
+{
+  "errors": [
+    {
+      "msg": "Invalid Email",
+      "param": "email",
+      "location": "body"
+    }
+  ]
+}
+```
+
+---
+
+### Example 3: Password Too Short
+
+**Request:**
+```bash
+POST /users/login
+Content-Type: application/json
+
+{
+  "email": "john.doe@gmail.com",
+  "password": "short"
+}
+```
+
+**Response (400 Bad Request):**
+```json
+{
+  "errors": [
+    {
+      "msg": "password must be at least 6 characters long",
+      "param": "password",
+      "location": "body"
+    }
+  ]
+}
+```
+
+---
+
+### Example 4: User Not Found
+
+**Request:**
+```bash
+POST /users/login
+Content-Type: application/json
+
+{
+  "email": "nonexistent@example.com",
+  "password": "validPassword123"
+}
+```
+
+**Response (401 Unauthorized):**
+```json
+{
+  "message": "Invalid email or password"
+}
+```
+
+---
+
+### Example 5: Incorrect Password
+
+**Request:**
+```bash
+POST /users/login
+Content-Type: application/json
+
+{
+  "email": "john.doe@gmail.com",
+  "password": "wrongPassword123"
+}
+```
+
+**Response (400 Bad Request):**
+```json
+{
+  "message": "Invalid email or password"
+}
+```
+
+---
+
+### Example 6: Multiple Validation Errors
+
+**Request:**
+```bash
+POST /users/login
+Content-Type: application/json
+
+{
+  "email": "invalid-email",
+  "password": "short"
+}
+```
+
+**Response (400 Bad Request):**
+```json
+{
+  "errors": [
+    {
+      "msg": "Invalid Email",
+      "param": "email",
+      "location": "body"
+    },
+    {
+      "msg": "password must be at least 6 characters long",
+      "param": "password",
+      "location": "body"
+    }
+  ]
+}
+```
+
+---
+
+## Example Usage
+
+### cURL
+```bash
+curl -X POST http://localhost:3000/users/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "john.doe@gmail.com",
+    "password": "securePass123"
+  }'
+```
+
+### JavaScript (Fetch API)
+```javascript
+const response = await fetch('http://localhost:3000/users/login', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    email: 'john.doe@gmail.com',
+    password: 'securePass123'
+  })
+});
+
+const data = await response.json();
+console.log(data);
+```
+
+### Python (Requests)
+```python
+import requests
+
+url = 'http://localhost:3000/users/login'
+payload = {
+    'email': 'john.doe@gmail.com',
+    'password': 'securePass123'
+}
+
+response = requests.post(url, json=payload)
+print(response.json())
+```
+
+---
+
+## Security Notes
+
+- **Password Comparison:** Passwords are compared using bcrypt's `compare()` method, which safely compares the provided password with the stored hash.
+- **JWT Token:** A JSON Web Token is generated upon successful authentication for use in subsequent requests.
+- **Password Not Returned:** The password field is never returned in the response for security reasons.
+- **Generic Error Messages:** Both "user not found" and "password mismatch" return the same generic error message to prevent email enumeration attacks.
+- **Secure Storage:** Passwords are never stored in plain text; only bcrypt hashes are stored in the database.
+
+---
+
+## Important Notes
+
+1. **Email Validation:** Must be a valid email format
+2. **Password Validation:** Minimum 6 characters required
+3. **Email Case Sensitivity:** Email matching is case-sensitive in the database
+4. **Password Verification:** Uses bcrypt's `comparePassword()` method for secure comparison
+5. **Error Message Security:** Generic messages prevent attackers from determining if an email exists
+
+---
+
+## Using the Login Token
+
+After successful login, use the returned token in subsequent API requests by including it in the Authorization header:
+
+```
+Authorization: Bearer <token>
+```
+
+**Example:**
+```bash
+curl -X GET http://localhost:3000/users/profile \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+---
