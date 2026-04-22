@@ -27,6 +27,7 @@ router.post('/login',[
 
 router.get('/profile',authMiddleware.authUser, userController.getUserProfile)  //yha pe auth middleware use karna hai bcoz profile protected route hai
 
+router.get('/logout', authMiddleware.authUser, userController.logoutUser)
 
 
 

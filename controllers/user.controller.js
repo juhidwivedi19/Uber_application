@@ -2,7 +2,7 @@
 const userModel = require('../models/user.model.js');
 const userService = require('../services/user.service');
 const {validationResult} = require('express-validator');
-
+const blackListTokenModel = require('../models/blackListToken.model');
 
 //Register user
 module.exports.registerUser = async (req,res,next) => {
@@ -59,7 +59,7 @@ module.exports.registerUser = async (req,res,next) => {
 
     res.cookie('token',token);  //yha pe token ko cookie me store karna hai taki user ke browser me token store ho jaye aur usko har request me bheja jaye
     
-    
+
     res.status(200).json({ token,user});
 
 
@@ -67,8 +67,21 @@ module.exports.registerUser = async (req,res,next) => {
 
 
 
-
 //get user profile
 module.exports.getUserProfile = async (req,res,next) => {
     res.status(200).json(req.user);
+}
+
+
+
+
+//logout user
+module.exports.logoutUser = async (req,res, next) => {
+     
+    res.clearCookie('token');
+    const token = req.cookies.token || req.headers.authorization.split(' ')[1];
+
+    await blackListTokenModel.create({token});  //blacklist token me token ko store karna hai taki usko future me use na kiya ja sake
+    res.status(200).json({ message: 'Logged out successfully' });
+
 }
