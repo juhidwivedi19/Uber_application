@@ -56,8 +56,19 @@ module.exports.registerUser = async (req,res,next) => {
     }
 
     const token = user.generateAuthToken();
+
+    res.cookie('token',token);  //yha pe token ko cookie me store karna hai taki user ke browser me token store ho jaye aur usko har request me bheja jaye
+    
     
     res.status(200).json({ token,user});
 
 
+}
+
+
+
+
+//get user profile
+module.exports.getUserProfile = async (req,res,next) => {
+    res.status(200).json(req.user);
 }
