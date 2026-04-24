@@ -7,7 +7,7 @@ const app=express();
 const cookieParser = require('cookie-parser');  //cookie parser for parsing cookies
 const connectToDb = require('./db/db'); //database connection
 const userRoutes = require('./routes/user.routes');
-
+const captainRoutes = require('./routes/captain.routes');
 
 connectToDb();  //database connection with server.js file
 
@@ -22,5 +22,8 @@ app.get('/', (req,res) => {
 
 
 app.use('/users', userRoutes);  //user routes for user registration and login
+app.use('./captains',captainRoutes);  //captain routes for captain registration and login
+
+
 
 module.exports=app;

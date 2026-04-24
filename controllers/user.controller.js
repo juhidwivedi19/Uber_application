@@ -16,6 +16,12 @@ module.exports.registerUser = async (req,res,next) => {
 
     const { fullname,email,password} = req.body;
 
+    const isUserAlreadyExist = await userModel.findOne({ email }); //is already user exist or not, if exist then return error message otherwise create new user
+
+    if(isUserAlreadyExist){
+        return res.status(400).json({ message: 'User with this email already exists' });
+    }
+
     const hashedPassword = await userModel.hashPassword(password);  // password ko aise normmal nhi likh sakte hai bcoz security ke liye usko hash karna padta hai
 
 
