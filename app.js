@@ -22,7 +22,7 @@ app.get('/', (req,res) => {
 
 
 app.use('/users', userRoutes);  //user routes for user registration and login
-app.use('./captains',captainRoutes);  //captain routes for captain registration and login
+app.use('/captains',captainRoutes);  //captain routes for captain registration and login
 
 
 
