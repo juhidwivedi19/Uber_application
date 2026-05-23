@@ -1,6 +1,7 @@
 const userModel = require('../models/user.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const blackListTokenModel = require('../models/blackListToken.model');
 
 
 module.exports.authUser = async (req,res,next) => {
@@ -22,13 +23,37 @@ module.exports.authUser = async (req,res,next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);  //token ko decode karne ke lie jwt.verify ka use karte hai
-       const user = await userModel.findById(decoded._id)
+       const user = await blackListTokenModel.findById(decoded._id)
 
        req.user = user;  //req.user me user ki information store karte hai
         
        return next();  //next() ka use karte hai taki agle middleware ya route handler me ja sake
 
 
+    } catch (error) {
+        return res.status(401).json({ message: 'Invalid token.' });
+    }
+}
+
+
+module.exports.authCaptain = async (req,res,next) => {
+    const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({ message: 'Access denied. No token provided.' });
+    }
+
+     const isBlacklisted = await blackListTokenModel.findOne({ token: token });
+   
+     if(isBlacklisted) {
+        return res.status(401).json({ message: 'Invalid token.' });
+     }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+         const captain = await blackListTokenModel.findById(decoded._id);
+
+         req.captain = captain;  //In request.captain we store the captain information
     } catch (error) {
         return res.status(401).json({ message: 'Invalid token.' });
     }
