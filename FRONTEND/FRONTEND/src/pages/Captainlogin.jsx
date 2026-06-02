@@ -22,7 +22,7 @@ const Captainlogin = () => {
   return (
    <div className='p-7 h-screen flex flex-col justify-between'>
        <div>
-         <img className='w-16 mx-auto mb-7  ml-16' src="https://freelogopng.com/images/all_img/1659761425uber-driver-logo-png.png" alt="Uber Logo" />
+         <img className='w-20 mx-auto mb-2  ml-16' src="https://freelogopng.com/images/all_img/1659761425uber-driver-logo-png.png" alt="Uber Logo" />
      
       <form onSubmit={(e)=>{
         submitHandler(e)
@@ -40,7 +40,7 @@ const Captainlogin = () => {
          }}
           className='bg-[#eeeeee] mb-7 rounded px-4 py-2 border w-full text-lg placeholder:text-base-content'
          type="email" 
-         placeholder='email@gmail.com'>
+         placeholder='email@example.com'>
          </input>
 
         <h3 className='text-xl mb-2'> Enter Password</h3>
@@ -62,7 +62,7 @@ const Captainlogin = () => {
           login
         </button>
          
-        <p className='text-center'>Join a fleet<Link to='/signup' className='text-blue-600 '>
+        <p className='text-center'>Join a fleet<Link to='/captain-signup' className='text-blue-600 '>
          Register as a Captain</Link></p> 
 
       </form>
@@ -70,7 +70,7 @@ const Captainlogin = () => {
 
 <div>
      <Link
-     to='/captain-login'
+     to='/login'
       className='bg-[orange] flex items-center justify-center text-white mb-5 font-semibold rounded px-4 py-2  w-full text-lg placeholder:text-base-content' 
   
      >

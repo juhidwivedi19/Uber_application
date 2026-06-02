@@ -41,7 +41,7 @@ const UserLogin = () => {
          }}
           className='bg-[#eeeeee] mb-7 rounded px-4 py-2 border w-full text-lg placeholder:text-base-content'
          type="email" 
-         placeholder='email@gmail.com'>
+         placeholder='email@example.com'>
          </input>
 
         <h3 className='text-xl mb-2'> Enter Password</h3>
