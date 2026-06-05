@@ -1,5 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState,useContext } from 'react'
 import { Link } from 'react-router-dom'
+import {UserDataContext} from '../context/UserContext'
+import {useNavigate} from 'react-router-dom'
+import axios from 'axios'
 
 
 const UserLogin = () => {
@@ -7,14 +10,28 @@ const UserLogin = () => {
    const [password, setPassword] = useState('')
    const [userData, setUserData] = useState({}) //to store user data after login
 
-   const submitHandler = (e)=>{
+
+   const {user,setUser} = useContext(UserDataContext)  //to get and set user data in context
+   const navigate = useNavigate()   //to navigate to home page after login
+
+
+   const submitHandler = async (e)=>{
     e.preventDefault();
-    setUserData({
+   
+    const userData= {
       email:email,
       password:password
-    })
+    }
   
-    console.log(userData) //after submit print the user data in console
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/login`,userData)  //send login request to backend
+
+    if( response.status == 200){
+      const data = response.data
+      setUser(data.user)
+      localStorage.setItem('token',data.token)
+      navigate('/home')  //navigate to home page after successful login
+    }
+   
 
     setEmail('')   //after submit clear the form
     setPassword('')

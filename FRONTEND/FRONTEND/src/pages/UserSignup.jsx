@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useContext } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { UserDataContext } from '../context/UserContext'
 
 const UserSignup = () => {
   const [firstName, setFirstName] = useState('')
@@ -8,23 +10,39 @@ const UserSignup = () => {
   const [password, setPassword] = useState('')
   const [userData, setUserData] = useState({})
 
-  const submitHandler = (e) => {
+  const navigate = useNavigate()
+
+  const { setUser } = useContext(UserDataContext)
+
+  const submitHandler = async (e) => {
     e.preventDefault()
 
-    setUserData({
-      fullName:{
-        firstName: firstName,
-        lastName: lastName
+    const newUser = {
+      fullname: {
+        firstname: firstName,
+        lastname: lastName
       },
       email: email,
       password: password
-    })
+    }
 
-  
-    setFirstName('')
-    setLastName('')
-    setEmail('')
-    setPassword('')
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/users/register`,
+        newUser
+      )
+
+      setUser(response.data.user)
+
+      navigate('/home')
+
+      setFirstName('')
+      setLastName('')
+      setEmail('')
+      setPassword('')
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -59,7 +77,7 @@ const UserSignup = () => {
             />
           </div>
 
-          <h3 className=' text-lg mb-2'>What's your email?</h3>
+          <h3 className='text-lg mb-2'>What's your email?</h3>
 
           <input
             required
@@ -85,7 +103,7 @@ const UserSignup = () => {
             type='submit'
             className='bg-black text-white mb-3 font-semibold rounded px-4 py-2 w-full text-lg'
           >
-            Signup
+            Create Account
           </button>
 
           <p className='text-center'>
@@ -98,9 +116,11 @@ const UserSignup = () => {
       </div>
 
       <div>
-       <p className='text-xs leading-tight '> 
-        By proceeding, you consent to get calls, whatsapp or SMS messages, including by automated means, from  Uber and its affiliates to the number provided.
-       </p>
+        <p className='text-xs leading-tight'>
+          By proceeding, you consent to get calls, whatsapp or SMS messages,
+          including by automated means, from Uber and its affiliates to the
+          number provided.
+        </p>
       </div>
     </div>
   )
