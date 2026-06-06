@@ -39,14 +39,21 @@ const CaptainSignup = () => {
       }
     }
 
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/captains/register`, captainData)
+  try {
+  const response = await axios.post(
+    `${import.meta.env.VITE_BASE_URL}/captains/register`,
+    captainData
+  );
 
-    if (response.status === 201) {
-      const data = response.data
-      setCaptain(data.captain)
-      localStorage.setItem('token', data.token)
-      navigate('/captain-home')
-    }
+  if (response.status === 201) {
+    const data = response.data;
+    setCaptain(data.captain);
+    localStorage.setItem("token", data.token);
+    navigate("/captain-home");
+  }
+} catch (error) {
+  console.log(error.response?.data);
+}
 
     setEmail('')
     setFirstName('')
@@ -160,7 +167,7 @@ const CaptainSignup = () => {
               <option value="" disabled>Select Vehicle Type</option>
               <option value="car">Car</option>
               <option value="auto">Auto</option>
-              <option value="moto">Moto</option>
+              <option value="motorcycle">Motorcycle</option>
             </select>
           </div>
 

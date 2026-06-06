@@ -61,7 +61,7 @@ module.exports.loginCaptain = async (req,res,next) => {
    //if password doest match then generate token and return response
    const token = captain.generateAuthToken();
    
-   res.cookies('token', token);
+   res.cookie('token', token);
 
    res.status(200).json({ token, captain}) ;
 }
