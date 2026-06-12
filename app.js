@@ -8,8 +8,11 @@ const cookieParser = require('cookie-parser');  //cookie parser for parsing cook
 const connectToDb = require('./db/db'); //database connection
 const userRoutes = require('./routes/user.routes');
 const captainRoutes = require('./routes/captain.routes');
+const mapsRoutes = require('./routes/maps.routes');
+const rideRoutes = require('./routes/ride.routes');
 
 connectToDb();  //database connection with server.js file
+
 
 app.use(cors());
 app.use(express.json());  //middleware for parsing json data
@@ -23,7 +26,7 @@ app.get('/', (req,res) => {
 
 app.use('/users', userRoutes);  //user routes for user registration and login
 app.use('/captains',captainRoutes);  //captain routes for captain registration and login
-
-
+app.use('/maps',mapsRoutes);
+app.use('/rides',rideRoutes);
 
 module.exports=app;

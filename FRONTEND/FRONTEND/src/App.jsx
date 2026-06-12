@@ -32,9 +32,9 @@ const App = () => {
 
 
           element={
-            <UserProtectWrapper>
+            <UserProtectedWrapper>
               <Home />
-            </UserProtectWrapper>
+            </UserProtectedWrapper>
           } />
 
 
